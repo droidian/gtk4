@@ -227,12 +227,19 @@ main (int argc, char **argv)
   else
     {
       GdkTexture *diff_texture;
+      guint max_diff = 0;
+      guint pixels_changed = 0;
+      guint pixels = 0;
 
       /* Now compare the two */
-      diff_texture = reftest_compare_textures (rendered_texture, reference_texture);
+      diff_texture = reftest_compare_textures (rendered_texture, reference_texture,
+                                               &max_diff, &pixels_changed, &pixels);
 
       if (diff_texture)
         {
+          g_print ("%u (out of %u) pixels differ from reference by up to %u levels\n",
+                   pixels_changed, pixels, max_diff);
+
           save_image (diff_texture, node_file, ".diff.png");
           g_object_unref (diff_texture);
           success = FALSE;
