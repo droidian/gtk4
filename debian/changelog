@@ -1,6 +1,9 @@
 gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * d/watch, d/copyright: Exclude pregenerated documentation.
+    There's a lot of it, and excluding it makes the diff to review a lot
+    smaller.
 
  -- Simon McVittie <smcv@debian.org>  Sun, 15 Aug 2021 15:59:10 +0100
 
