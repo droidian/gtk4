@@ -4,8 +4,13 @@ gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
   * d/watch, d/copyright: Exclude pregenerated documentation.
     There's a lot of it, and excluding it makes the diff to review a lot
     smaller.
+  * d/control.in: Bump meson requirement as per meson.build
+  * d/control.in: Remove build-dependencies for Google Cloud Print.
+    The service underlying this printing backend was shut down at the end
+    of 2020, so the printing backend is no longer useful and was removed
+    upstream.
 
- -- Simon McVittie <smcv@debian.org>  Sun, 15 Aug 2021 15:59:10 +0100
+ -- Simon McVittie <smcv@debian.org>  Sun, 15 Aug 2021 16:21:04 +0100
 
 gtk4 (4.3.1+ds-2) experimental; urgency=medium
 
