@@ -25,8 +25,14 @@ gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
   * tests: Specify locales' charsets explicitly, fixing FTBFS with new glibc.
     glibc 2.31-14 dropped support for all non-UTF-8 locales, so we can't
     use /usr/share/i18n/SUPPORTED to choose a suitable charset any more.
+  * Update symbols file
+  * Leave Vulkan disabled, and remove Vulkan symbols from .symbols file.
+    This is an ABI break, but only in experimental so far. The Vulkan
+    renderer is marked as experimental upstream, with a note that it often
+    causes crashes in the Inspector view; this sounds like something we
+    likely don't want yet.
 
- -- Simon McVittie <smcv@debian.org>  Thu, 19 Aug 2021 22:06:07 +0100
+ -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 00:24:59 +0100
 
 gtk4 (4.3.1+ds-2) experimental; urgency=medium
 
