@@ -1,4 +1,4 @@
-gtk4 (4.3.2+ds1-1) experimental; urgency=medium
+gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
 
   * New upstream release
   * d/watch, d/copyright: Exclude pregenerated documentation.
