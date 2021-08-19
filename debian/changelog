@@ -1,4 +1,4 @@
-gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
+gtk4 (4.3.2+ds1-1) experimental; urgency=medium
 
   * New upstream release
   * d/watch, d/copyright: Exclude pregenerated documentation.
@@ -9,8 +9,24 @@ gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
     The service underlying this printing backend was shut down at the end
     of 2020, so the printing backend is no longer useful and was removed
     upstream.
+  * Drop patches that were applied upstream
+  * d/rules: Rebuild emoji data from source files.
+    This provides a straightforward way to check that we have the correct
+    source files.
+  * Disable GStreamer for the udeb build.
+    Support for VP8 and VP9 is officially part of the GTK4 API, but it seems
+    OK to provide a reduced API in debian-installer.
+  * Enable FFmpeg for the main build.
+    This is currently off by default and labelled as experimental, but if
+    we want to offer libgtk-4-media-ffmpeg then we will have to enable it.
+  * d/control.in: Label the FFmpeg media backend as experimental.
+    Based on what upstream git history says, we want people to be using the
+    GStreamer backend unless they have specific reasons not to.
+  * tests: Specify locales' charsets explicitly, fixing FTBFS with new glibc.
+    glibc 2.31-14 dropped support for all non-UTF-8 locales, so we can't
+    use /usr/share/i18n/SUPPORTED to choose a suitable charset any more.
 
- -- Simon McVittie <smcv@debian.org>  Sun, 15 Aug 2021 16:21:04 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 19 Aug 2021 22:06:07 +0100
 
 gtk4 (4.3.1+ds-2) experimental; urgency=medium
 
