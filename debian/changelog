@@ -31,8 +31,12 @@ gtk4 (4.3.2+ds1-1) UNRELEASED; urgency=medium
     renderer is marked as experimental upstream, with a note that it often
     causes crashes in the Inspector view; this sounds like something we
     likely don't want yet.
+  * d/rules: Override dh_fixperms to set correct permissions on /usr/libexec.
+    Making everything executable is not quite right for installed-tests.
+  * d/copyright: Update
+  * Silence a Lintian tag for documentation-like filenames among test data
 
- -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 00:24:59 +0100
+ -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 10:04:27 +0100
 
 gtk4 (4.3.1+ds-2) experimental; urgency=medium
 
