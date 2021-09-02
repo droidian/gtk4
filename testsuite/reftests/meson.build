@@ -71,9 +71,6 @@ testdata = [
   'background-area.css',
   'background-area.ref.ui',
   'background-area.ui',
-  'background-blend-mode-clip-interaction.css',
-  'background-blend-mode-clip-interaction.ref.ui',
-  'background-blend-mode-clip-interaction.ui',
   'background-color-transparent.css',
   'background-color-transparent.ref.ui',
   'background-color-transparent.ui',
@@ -92,9 +89,6 @@ testdata = [
   'background-position-repeat.ref.ui',
   'background-position-repeat.ui',
   'background-position-repeat-bg.png',
-  'background-position-simple.css',
-  'background-position-simple.ref.ui',
-  'background-position-simple.ui',
   'background-repeat-clip.css',
   'background-repeat-clip.ref.ui',
   'background-repeat-clip.ui',
@@ -581,6 +575,19 @@ xfails = [
   # the NGL renderer can't deal with non-integer sizes
   'border-half-pixel.ui'
 ]
+
+if not host_machine.cpu_family().contains('mips')
+  testdata += [
+    # https://gitlab.gnome.org/GNOME/gtk/-/issues/4618
+    'background-blend-mode-clip-interaction.css',
+    'background-blend-mode-clip-interaction.ref.ui',
+    'background-blend-mode-clip-interaction.ui',
+    # https://gitlab.gnome.org/GNOME/gtk/-/issues/4228
+    'background-position-simple.css',
+    'background-position-simple.ref.ui',
+    'background-position-simple.ui',
+  ]
+endif
 
 reftest_env = environment()
 reftest_env.set('GTK_A11Y', 'test')

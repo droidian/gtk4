@@ -77,15 +77,21 @@ compare_render_tests = [
   'scale-up-down',
   'shadow-in-opacity',
   'texture-url',
-  'repeat',
   'repeat-no-repeat',
-  'repeat-negative-coords',
   'repeat-texture',
   'transform-in-transform',
   'transform-in-transform-in-transform',
   'unaligned-offscreen',
   'rounded-clip-in-clip-3d', # not really 3d, but cairo fails it
 ]
+
+if not host_machine.cpu_family().contains('mips')
+  # https://gitlab.gnome.org/GNOME/gtk/-/issues/4228
+  compare_render_tests += [
+    'repeat',
+    'repeat-negative-coords',
+  ]
+endif
 
 # these are too sensitive to differences in the renderers
 # to run in ci, but still useful to keep around
