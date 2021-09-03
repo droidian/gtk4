@@ -12,7 +12,6 @@ clipboard_client = executable('clipboard-client',
 tests = [
   { 'name': 'array' },
   { 'name': 'cairo' },
-  { 'name': 'clipboard', 'parallel': false, },
   { 'name': 'contentformats' },
   { 'name': 'contentserializer' },
   { 'name': 'cursor' },
