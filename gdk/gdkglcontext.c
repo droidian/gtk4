@@ -615,7 +615,7 @@ gdk_gl_context_real_end_frame (GdkDrawContext *draw_context,
 
   gdk_profiler_add_mark (GDK_PROFILER_CURRENT_TIME, 0, "EGL", "swap buffers");
 
-  if (priv->eglSwapBuffersWithDamage)
+  if (priv->eglSwapBuffersWithDamage && display->have_egl_buffer_age)
     {
       EGLint stack_rects[4 * 4]; /* 4 rects */
       EGLint *heap_rects = NULL;
