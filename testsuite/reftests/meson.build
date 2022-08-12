@@ -361,8 +361,6 @@ testdata = [
   'image-load-from-file.css',
   'image-load-from-file.ref.ui',
   'image-load-from-file.ui',
-  'inscription-markup.ref.ui',
-  'inscription-markup.ui',
   'inscription-overflow.ref.ui',
   'inscription-overflow.ui',
   'inscription-overflow-multiline.ref.ui',
