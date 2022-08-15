@@ -78,6 +78,11 @@ option('f16c',
        value: 'enabled',
        description: 'Enable F16C fast paths (requires F16C)')
 
+option('fast_gresource_embedding',
+       type: 'boolean',
+       value: true,
+       description: 'Speed up GResource compilation (does not work on all architectures)')
+
 # Documentation and introspection
 
 option('gtk_doc',

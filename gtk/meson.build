@@ -866,15 +866,28 @@ if not fs.exists('theme/Default/Default-light.css')
 endif
 
 
+fast_gresource_embedding = get_option('fast_gresource_embedding')
+
 objcopy_supports_add_symbol = false
 objcopy = find_program('objcopy', required : false)
 if objcopy.found()
   objcopy_supports_add_symbol = run_command(objcopy, '--help').stdout().contains('--add-symbol')
 endif
+fast_gresource_embedding = fast_gresource_embedding and objcopy_supports_add_symbol
 
 ld = find_program('ld', required : false)
+fast_gresource_embedding = fast_gresource_embedding and ld.found()
 
-if not meson.is_cross_build() and build_machine.cpu_family() != 'arm' and build_machine.system() == 'linux' and objcopy.found() and objcopy_supports_add_symbol and ld.found()
+if meson.is_cross_build() or build_machine.system() != 'linux'
+  fast_gresource_embedding = false
+endif
+
+if build_machine.cpu_family() in ['arm', 'mips']
+  # Known not to work reliably on these architectures
+  fast_gresource_embedding = false
+endif
+
+if fast_gresource_embedding
   glib_compile_resources = find_program('glib-compile-resources')
 
   # Create the resource blob
