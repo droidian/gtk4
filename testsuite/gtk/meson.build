@@ -78,7 +78,7 @@ tests = [
   { 'name': 'sortlistmodel-exhaustive' },
   { 'name': 'spinbutton' },
   { 'name': 'stringlist' },
-  { 'name': 'templates' },
+  #{ 'name': 'templates' },
   { 'name': 'textiter' },
   { 'name': 'theme-validate' },
   { 'name': 'tooltips' },
