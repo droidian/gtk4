@@ -25,7 +25,6 @@ tests = [
   { 'name': 'rectangle' },
   { 'name': 'rgba' },
   { 'name': 'seat' },
-  { 'name': 'texture' },
   { 'name': 'texture-threads' },
 ]
 
@@ -53,7 +52,8 @@ foreach t : tests
 endforeach
 
 internal_tests = [
-  'image'
+  'image',
+  'texture',
 ]
 
 foreach t : internal_tests
