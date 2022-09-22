@@ -1,3 +1,106 @@
+gtk4 (4.8.1+ds-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/libgtk-4-1.symbols.in: Add a new symbol
+  * d/control.in: Replace transitional libfontconfig1-dev with
+    libfontconfig-dev
+  * d/missing-sources: Update for upstream updates to Compose data
+  * d/p/gdkevents-Don-t-ignore-modifiers-that-are-not-currently-a.patch:
+    Add proposed patch to fix keyboard shortcuts with X11 backend
+    (Closes: #1016927)
+  * d/p/build-Use-more-conservative-GResource-embedding-on-non-x8.patch:
+    Update patch for GResource embedding based on upstream feedback
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 17 Sep 2022 22:23:08 +0100
+
+gtk4 (4.7.2+ds-3) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * debian/libgtk-4-1.symbols.in: Mark more Wayland symbols as Linux-specific
+  * Build-depend on dh-exec
+  * Avoid trying to install Wayland documentation on non-Linux
+    (Closes: #1017866)
+
+  [ Jeremy Bicha ]
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Sun, 21 Aug 2022 17:40:46 -0400
+
+gtk4 (4.7.2+ds-2) experimental; urgency=medium
+
+  * Merge packaging changes from unstable
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 16 Aug 2022 11:24:01 +0100
+
+gtk4 (4.6.6+ds-3) unstable; urgency=medium
+
+  * Branch 4.6.x for unstable
+  * d/rules: Force softpipe OpenGL driver on mips* architectures.
+    This is a workaround for misrendering and crashes when the buildds run
+    tests under llvmpipe on these architectures (see #993550, #1003348,
+    #1010838).
+  * d/p/debian/Skip-some-known-failing-tests-on-mips-family-architecture.patch:
+    Remove patch, stop skipping tests that (should) pass on mips*el when
+    we force softpipe.
+  * d/p/Work-around-1014417-in-Meson.patch:
+    Remove workaround for a Meson 0.63.0 bug that was fixed in 0.63.1
+  * d/p/build-Add-an-option-to-use-more-conservative-GResource-em.patch:
+    Add a build option to disable the GResource fast-path, and disable it.
+    It isn't reliable on non-mainstream architectures, and the compile time
+    improvement is not significant if we're compiling all of GTK anyway.
+  * d/rules: Enable broadway backend for the .deb build (but not the udeb).
+    This is apparently used by Cambalache and Deckard, and also the
+    Pidgin unit tests. (Closes: #994944)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 16 Aug 2022 09:23:59 +0100
+
+gtk4 (4.7.2+ds-1) experimental; urgency=medium
+
+  * New upstream development release
+    - Fix crashes involving GL/GLES version selection on PinePhone
+      (Closes: #1009917)
+  * Repack with wayland and wayland-protocols subprojects omitted.
+    The versions in unstable are sufficiently new.
+  * d/control.in: Update dependency versions
+  * d/copyright: Update
+  * Refresh patch series
+  * Skip inscription-markup.ui reftest for now.
+    The whole thing is rendered 1px offset from where it should be, which is
+    not a serious problem for practical use of GTK, but makes the tests fail.
+  * d/gtk-4-examples.install: Include the new NodeEditor demo
+  * Update symbols file for new ABI
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 12 Aug 2022 11:46:07 +0100
+
+gtk4 (4.6.6+ds-2) unstable; urgency=medium
+
+  [ Evangelos Ribeiro Tzaras ]
+  * Drop erroneous !nocheck annotation from python3-gi Build-Depends
+    (Closes: #1014878)
+
+  [ Simon McVittie ]
+  * Add temporary patch to work around #1014417 in Meson
+  * Standards-Version: 4.6.1 (no changes required)
+  * Migrate GLib 2.68.0 build-dependency from d/control to d/control.in
+  * d/copyright: Drop unused GPL license stanzas
+  * d/gtk-4-tests.lintian-overrides: Update syntax for current Lintian
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 08 Aug 2022 19:22:54 +0100
+
+gtk4 (4.6.6+ds-1) unstable; urgency=medium
+
+  [ Jeremy Bicha ]
+  * New upstream release (LP: #1980742)
+
+  [ Simon McVittie ]
+  * d/tests/installed-tests: Fail on unset variable references
+  * d/tests/installed-tests: Fail if no tests are found
+
+  [ Evangelos Ribeiro Tzaras ]
+  * Bump required glib build dependency
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Tue, 05 Jul 2022 11:24:34 -0400
+
 gtk4 (4.6.5+ds-1) unstable; urgency=medium
 
   [ Jeremy Bicha ]
