@@ -36,6 +36,7 @@ compare_render_tests = [
   'clip-nested1',
   'color-blur0',
   'color-matrix-identity',
+  'color-matrix-parsing',
   'cross-fade-in-opacity',
   'css-background',
   'empty-blend',
@@ -134,6 +135,8 @@ node_parser_tests = [
   'blend.node',
   'border.node',
   'color.node',
+  'conic-gradient.node',
+  'conic-gradient.ref.node',
   'crash1.errors',
   'crash1.node',
   'crash1.ref.node',
@@ -146,6 +149,9 @@ node_parser_tests = [
   'crash4.node',
   'crash4.ref.node',
   'debug.node',
+  'debug-fail.node',
+  'debug-fail.ref.node',
+  'debug-fail.errors',
   'empty-blend.node',
   'empty-blend.ref.node',
   'empty-blur.node',
@@ -186,9 +192,33 @@ node_parser_tests = [
   'empty-texture.ref.node',
   'empty-transform.node',
   'empty-transform.ref.node',
+  'glshader.node',
+  'glshader.ref.node',
+  'glshader.errors',
+  'gradient-fail.node',
+  'gradient-fail.ref.node',
+  'gradient-fail.errors',
+  'radial-gradient.node',
+  'radial-gradient.ref.node',
+  'repeating-linear-gradient.node',
+  'repeating-linear-gradient.ref.node',
+  'repeating-radial-gradient.node',
+  'repeating-radial-gradient.ref.node',
   'rounded-rect.node',
   'shadow.node',
+  'shadow-fail.node',
+  'shadow-fail.ref.node',
+  'shadow-fail.errors',
   'testswitch.node',
+  'text-fail.node',
+  'text-fail.ref.node',
+  'text-fail.errors',
+  'texture-fail.node',
+  'texture-fail.ref.node',
+  'texture-fail.ref.errors',
+  'transform-fail.node',
+  'transform-fail.ref.node',
+  'transform-fail.errors',
   'widgetfactory.node',
 ]
 
@@ -210,7 +240,6 @@ foreach test : node_parser_tests
 endforeach
 
 tests = [
-  ['rounded-rect'],
   ['transform'],
   ['shader'],
 ]
@@ -247,6 +276,8 @@ endforeach
 internal_tests = [
   [ 'diff' ],
   [ 'half-float' ],
+  ['rounded-rect'],
+  ['misc'],
 ]
 
 foreach t : internal_tests

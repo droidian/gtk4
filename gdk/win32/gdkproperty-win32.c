@@ -31,6 +31,7 @@
 
 #include "gdkdisplayprivate.h"
 #include "gdkprivate-win32.h"
+#include "gdkdisplay-win32.h"
 #include "gdkwin32.h"
 
 static char *
@@ -162,6 +163,25 @@ _gdk_win32_get_setting (const char *name,
       g_value_set_int (value, 1);
       return TRUE;
     }
+  else if (strcmp ("gtk-xft-dpi", name) == 0)
+    {
+      GdkWin32Display *display = GDK_WIN32_DISPLAY (_gdk_display);
+
+      if (display->dpi_aware_type == PROCESS_SYSTEM_DPI_AWARE &&
+          !display->has_fixed_scale)
+        {
+          int dpi = GetDeviceCaps (GetDC (NULL), LOGPIXELSX);
+          if (dpi >= 96)
+            {
+              int xft_dpi = 1024 * dpi / display->surface_scale;
+              g_value_set_int (value, xft_dpi);
+              GDK_NOTE(MISC, g_print ("gdk_screen_get_setting(\"%s\") : %d\n", name, xft_dpi));
+              return TRUE;
+            }
+        }
+
+      return FALSE;
+    }
   else if (strcmp ("gtk-xft-hintstyle", name) == 0)
     {
       g_value_set_static_string (value, "hintfull");
@@ -219,6 +239,19 @@ _gdk_win32_get_setting (const char *name,
         g_value_set_static_string (value, "");
 
       return TRUE;
+    }
+  else if (strcmp ("gtk-overlay-scrolling", name) == 0)
+    {
+      DWORD val = 0;
+      DWORD sz = sizeof (val);
+      LSTATUS ret = 0;
+
+      ret = RegGetValueW (HKEY_CURRENT_USER, L"Control Panel\\Accessibility", L"DynamicScrollbars", RRF_RT_DWORD, NULL, &val, &sz);
+      if (ret == ERROR_SUCCESS)
+        {
+          g_value_set_boolean (value, val != 0);
+          return TRUE;
+        }
     }
 
   return FALSE;

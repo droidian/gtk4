@@ -757,9 +757,7 @@ gtk_text_class_init (GtkTextClass *class)
    * The `GtkEntryBuffer` object which stores the text.
    */
   text_props[PROP_BUFFER] =
-      g_param_spec_object ("buffer",
-                           P_("Text Buffer"),
-                           P_("Text buffer object which actually stores self text"),
+      g_param_spec_object ("buffer", NULL, NULL,
                            GTK_TYPE_ENTRY_BUFFER,
                            GTK_PARAM_READWRITE|G_PARAM_CONSTRUCT|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -771,9 +769,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Zero indicates no limit.
    */
   text_props[PROP_MAX_LENGTH] =
-      g_param_spec_int ("max-length",
-                        P_("Maximum length"),
-                        P_("Maximum number of characters for this self. Zero if no maximum"),
+      g_param_spec_int ("max-length", NULL, NULL,
                         0, GTK_ENTRY_BUFFER_MAX_SIZE,
                         0,
                         GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -784,9 +780,7 @@ gtk_text_class_init (GtkTextClass *class)
    * The character to used when masking contents (in “password mode”).
    */
   text_props[PROP_INVISIBLE_CHAR] =
-      g_param_spec_unichar ("invisible-char",
-                            P_("Invisible character"),
-                            P_("The character to use when masking self contents (in “password mode”)"),
+      g_param_spec_unichar ("invisible-char", NULL, NULL,
                             '*',
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -796,9 +790,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Whether to activate the default widget when Enter is pressed.
    */
   text_props[PROP_ACTIVATES_DEFAULT] =
-      g_param_spec_boolean ("activates-default",
-                            P_("Activates default"),
-                            P_("Whether to activate the default widget (such as the default button in a dialog) when Enter is pressed"),
+      g_param_spec_boolean ("activates-default", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -808,9 +800,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Number of pixels scrolled of the screen to the left.
    */
   text_props[PROP_SCROLL_OFFSET] =
-      g_param_spec_int ("scroll-offset",
-                        P_("Scroll offset"),
-                        P_("Number of pixels of the text scrolled off the screen to the left"),
+      g_param_spec_int ("scroll-offset", NULL, NULL,
                         0, G_MAXINT,
                         0,
                         GTK_PARAM_READABLE|G_PARAM_EXPLICIT_NOTIFY);
@@ -821,9 +811,7 @@ gtk_text_class_init (GtkTextClass *class)
    * When %TRUE, pasted multi-line text is truncated to the first line.
    */
   text_props[PROP_TRUNCATE_MULTILINE] =
-      g_param_spec_boolean ("truncate-multiline",
-                            P_("Truncate multiline"),
-                            P_("Whether to truncate multiline pastes to one line."),
+      g_param_spec_boolean ("truncate-multiline", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -833,9 +821,7 @@ gtk_text_class_init (GtkTextClass *class)
    * If text is overwritten when typing in the `GtkText`.
    */
   text_props[PROP_OVERWRITE_MODE] =
-      g_param_spec_boolean ("overwrite-mode",
-                            P_("Overwrite mode"),
-                            P_("Whether new text overwrites existing text"),
+      g_param_spec_boolean ("overwrite-mode", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -845,9 +831,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Whether the invisible char has been set for the `GtkText`.
    */
   text_props[PROP_INVISIBLE_CHAR_SET] =
-      g_param_spec_boolean ("invisible-char-set",
-                            P_("Invisible character set"),
-                            P_("Whether the invisible character has been set"),
+      g_param_spec_boolean ("invisible-char-set", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE);
 
@@ -858,9 +842,7 @@ gtk_text_class_init (GtkTextClass *class)
   * and unfocused.
   */
   text_props[PROP_PLACEHOLDER_TEXT] =
-      g_param_spec_string ("placeholder-text",
-                           P_("Placeholder text"),
-                           P_("Show text in the GtkText when it’s empty and unfocused"),
+      g_param_spec_string ("placeholder-text", NULL, NULL,
                            NULL,
                            GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -876,9 +858,7 @@ gtk_text_class_init (GtkTextClass *class)
    * property.
    */
   text_props[PROP_IM_MODULE] =
-      g_param_spec_string ("im-module",
-                           P_("IM module"),
-                           P_("Which IM module should be used"),
+      g_param_spec_string ("im-module", NULL, NULL,
                            NULL,
                            GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -895,9 +875,7 @@ gtk_text_class_init (GtkTextClass *class)
    * [property@Gtk.Text:visibility].
    */
   text_props[PROP_INPUT_PURPOSE] =
-      g_param_spec_enum ("input-purpose",
-                         P_("Purpose"),
-                         P_("Purpose of the text field"),
+      g_param_spec_enum ("input-purpose", NULL, NULL,
                          GTK_TYPE_INPUT_PURPOSE,
                          GTK_INPUT_PURPOSE_FREE_FORM,
                          GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -909,9 +887,7 @@ gtk_text_class_init (GtkTextClass *class)
    * their behaviour.
    */
   text_props[PROP_INPUT_HINTS] =
-      g_param_spec_flags ("input-hints",
-                          P_("hints"),
-                          P_("Hints for the text field behaviour"),
+      g_param_spec_flags ("input-hints", NULL, NULL,
                           GTK_TYPE_INPUT_HINTS,
                           GTK_INPUT_HINT_NONE,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -927,9 +903,7 @@ gtk_text_class_init (GtkTextClass *class)
    * `GtkEntryBuffer` text, i.e. without the preedit string.
    */
   text_props[PROP_ATTRIBUTES] =
-      g_param_spec_boxed ("attributes",
-                          P_("Attributes"),
-                          P_("A list of style attributes to apply to the text of the GtkText"),
+      g_param_spec_boxed ("attributes", NULL, NULL,
                           PANGO_TYPE_ATTR_LIST,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -939,9 +913,7 @@ gtk_text_class_init (GtkTextClass *class)
    * A list of tabstops to apply to the text of the `GtkText`.
    */
   text_props[PROP_TABS] =
-      g_param_spec_boxed ("tabs",
-                          P_("Tabs"),
-                          P_("A list of tabstop locations to apply to the text of the GtkText"),
+      g_param_spec_boxed ("tabs", NULL, NULL,
                           PANGO_TYPE_TAB_ARRAY,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -951,9 +923,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Whether to suggest Emoji replacements.
    */
   text_props[PROP_ENABLE_EMOJI_COMPLETION] =
-      g_param_spec_boolean ("enable-emoji-completion",
-                            P_("Enable Emoji completion"),
-                            P_("Whether to suggest Emoji replacements"),
+      g_param_spec_boolean ("enable-emoji-completion", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -963,9 +933,7 @@ gtk_text_class_init (GtkTextClass *class)
    * If %FALSE, the text is masked with the “invisible char”.
    */
   text_props[PROP_VISIBILITY] =
-      g_param_spec_boolean ("visibility",
-                            P_("Visibility"),
-                            P_("FALSE displays the “invisible char” instead of the actual text (password mode)"),
+      g_param_spec_boolean ("visibility", NULL, NULL,
                             TRUE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -975,9 +943,7 @@ gtk_text_class_init (GtkTextClass *class)
    * Whether the widget should grow and shrink with the content.
    */
   text_props[PROP_PROPAGATE_TEXT_WIDTH] =
-      g_param_spec_boolean ("propagate-text-width",
-                            P_("Propagate text width"),
-                            P_("Whether the entry should grow and shrink with the content"),
+      g_param_spec_boolean ("propagate-text-width", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -988,9 +954,7 @@ gtk_text_class_init (GtkTextClass *class)
    * the context menu.
    */
   text_props[PROP_EXTRA_MENU] =
-      g_param_spec_object ("extra-menu",
-                          P_("Extra menu"),
-                          P_("Menu model to append to the context menu"),
+      g_param_spec_object ("extra-menu", NULL, NULL,
                           G_TYPE_MENU_MODEL,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -1523,13 +1487,13 @@ gtk_text_class_init (GtkTextClass *class)
                                        NULL);
 
   /* Emoji */
-  gtk_widget_class_add_binding_signal (widget_class,
+  gtk_widget_class_add_binding_action (widget_class,
                                        GDK_KEY_period, GDK_CONTROL_MASK,
-                                       "insert-emoji",
+                                       "misc.insert-emoji",
                                        NULL);
-  gtk_widget_class_add_binding_signal (widget_class,
+  gtk_widget_class_add_binding_action (widget_class,
                                        GDK_KEY_semicolon, GDK_CONTROL_MASK,
-                                       "insert-emoji",
+                                       "misc.insert-emoji",
                                        NULL);
 
   /* Undo/Redo */
@@ -1892,7 +1856,7 @@ gtk_text_init (GtkText *self)
   GTK_TEXT_CONTENT (priv->selection_content)->self = self;
 
   target = gtk_drop_target_new (G_TYPE_STRING, GDK_ACTION_COPY | GDK_ACTION_MOVE);
-  gtk_event_controller_set_name (GTK_EVENT_CONTROLLER (target), "gtk-text-drop-target");
+  gtk_event_controller_set_static_name (GTK_EVENT_CONTROLLER (target), "gtk-text-drop-target");
   g_signal_connect (target, "accept", G_CALLBACK (gtk_text_drag_accept), self);
   g_signal_connect (target, "enter", G_CALLBACK (gtk_text_drag_motion), self);
   g_signal_connect (target, "motion", G_CALLBACK (gtk_text_drag_motion), self);
@@ -1917,7 +1881,7 @@ gtk_text_init (GtkText *self)
                     G_CALLBACK (gtk_text_delete_surrounding_cb), self);
 
   priv->drag_gesture = gtk_gesture_drag_new ();
-  gtk_event_controller_set_name (GTK_EVENT_CONTROLLER (priv->drag_gesture), "gtk-text-drag-gesture");
+  gtk_event_controller_set_static_name (GTK_EVENT_CONTROLLER (priv->drag_gesture), "gtk-text-drag-gesture");
   g_signal_connect (priv->drag_gesture, "drag-update",
                     G_CALLBACK (gtk_text_drag_gesture_update), self);
   g_signal_connect (priv->drag_gesture, "drag-end",
@@ -1927,7 +1891,7 @@ gtk_text_init (GtkText *self)
   gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (priv->drag_gesture));
 
   gesture = gtk_gesture_click_new ();
-  gtk_event_controller_set_name (GTK_EVENT_CONTROLLER (gesture), "gtk-text-click-gesture");
+  gtk_event_controller_set_static_name (GTK_EVENT_CONTROLLER (gesture), "gtk-text-click-gesture");
   g_signal_connect (gesture, "pressed",
                     G_CALLBACK (gtk_text_click_gesture_pressed), self);
   gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
@@ -1935,14 +1899,14 @@ gtk_text_init (GtkText *self)
   gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (gesture));
 
   controller = gtk_event_controller_motion_new ();
-  gtk_event_controller_set_name (controller, "gtk-text-motion-controller");
+  gtk_event_controller_set_static_name (controller, "gtk-text-motion-controller");
   g_signal_connect (controller, "motion",
                     G_CALLBACK (gtk_text_motion_controller_motion), self);
   gtk_widget_add_controller (GTK_WIDGET (self), controller);
 
   priv->key_controller = gtk_event_controller_key_new ();
   gtk_event_controller_set_propagation_phase (priv->key_controller, GTK_PHASE_TARGET);
-  gtk_event_controller_set_name (priv->key_controller, "gtk-text-key-controller");
+  gtk_event_controller_set_static_name (priv->key_controller, "gtk-text-key-controller");
   g_signal_connect (priv->key_controller, "key-pressed",
                     G_CALLBACK (gtk_text_key_controller_key_pressed), self);
   g_signal_connect_swapped (priv->key_controller, "im-update",
@@ -1952,7 +1916,7 @@ gtk_text_init (GtkText *self)
   gtk_widget_add_controller (GTK_WIDGET (self), priv->key_controller);
 
   priv->focus_controller = gtk_event_controller_focus_new ();
-  gtk_event_controller_set_name (priv->focus_controller, "gtk-text-focus-controller");
+  gtk_event_controller_set_static_name (priv->focus_controller, "gtk-text-focus-controller");
   g_signal_connect (priv->focus_controller, "notify::is-focus",
                     G_CALLBACK (gtk_text_focus_changed), self);
   gtk_widget_add_controller (GTK_WIDGET (self), priv->focus_controller);
@@ -3731,6 +3695,7 @@ buffer_notify_text (GtkEntryBuffer *buffer,
                     GtkText        *self)
 {
   emit_changed (self);
+  update_placeholder_visibility (self);
   g_object_notify (G_OBJECT (self), "text");
 }
 
@@ -3807,8 +3772,6 @@ gtk_text_move_cursor (GtkText         *self,
 {
   GtkTextPrivate *priv = gtk_text_get_instance_private (self);
   int new_pos = priv->current_pos;
-
-  gtk_text_reset_im_context (self);
 
   if (priv->current_pos != priv->selection_bound && !extend_selection)
     {
@@ -3936,6 +3899,9 @@ gtk_text_move_cursor (GtkText         *self,
     gtk_text_set_selection_bounds (self, new_pos, new_pos);
 
   gtk_text_pend_cursor_blink (self);
+
+  priv->need_im_reset = TRUE;
+  gtk_text_reset_im_context (self);
 }
 
 static void
@@ -3963,8 +3929,6 @@ gtk_text_delete_from_cursor (GtkText       *self,
   int end_pos = priv->current_pos;
   int old_n_bytes = gtk_entry_buffer_get_bytes (get_buffer (self));
 
-  gtk_text_reset_im_context (self);
-
   if (!priv->editable)
     {
       gtk_widget_error_bell (GTK_WIDGET (self));
@@ -3974,6 +3938,8 @@ gtk_text_delete_from_cursor (GtkText       *self,
   if (priv->selection_bound != priv->current_pos)
     {
       gtk_text_delete_selection (self);
+      gtk_text_schedule_im_reset (self);
+      gtk_text_reset_im_context (self);
       return;
     }
 
@@ -4038,6 +4004,11 @@ gtk_text_delete_from_cursor (GtkText       *self,
 
   if (gtk_entry_buffer_get_bytes (get_buffer (self)) == old_n_bytes)
     gtk_widget_error_bell (GTK_WIDGET (self));
+  else
+    {
+      gtk_text_schedule_im_reset (self);
+      gtk_text_reset_im_context (self);
+    }
 
   gtk_text_pend_cursor_blink (self);
 }
@@ -4048,8 +4019,6 @@ gtk_text_backspace (GtkText *self)
   GtkTextPrivate *priv = gtk_text_get_instance_private (self);
   int prev_pos;
 
-  gtk_text_reset_im_context (self);
-
   if (!priv->editable)
     {
       gtk_widget_error_bell (GTK_WIDGET (self));
@@ -4059,6 +4028,8 @@ gtk_text_backspace (GtkText *self)
   if (priv->selection_bound != priv->current_pos)
     {
       gtk_text_delete_selection (self);
+      gtk_text_schedule_im_reset (self);
+      gtk_text_reset_im_context (self);
       return;
     }
 
@@ -4103,6 +4074,9 @@ gtk_text_backspace (GtkText *self)
         {
           gtk_editable_delete_text (GTK_EDITABLE (self), prev_pos, priv->current_pos);
         }
+
+      gtk_text_schedule_im_reset (self);
+      gtk_text_reset_im_context (self);
     }
   else
     {
@@ -4267,6 +4241,7 @@ gtk_text_commit_cb (GtkIMContext *context,
     {
       gtk_text_enter_text (self, str);
       gtk_text_obscure_mouse_cursor (self);
+      gtk_im_context_reset (context);
     }
 }
 
@@ -4323,9 +4298,12 @@ gtk_text_delete_surrounding_cb (GtkIMContext *context,
   GtkTextPrivate *priv = gtk_text_get_instance_private (self);
 
   if (priv->editable)
-    gtk_editable_delete_text (GTK_EDITABLE (self),
-                              priv->current_pos + offset,
-                              priv->current_pos + offset + n_chars);
+    {
+      gtk_editable_delete_text (GTK_EDITABLE (self),
+                                priv->current_pos + offset,
+                                priv->current_pos + offset + n_chars);
+      gtk_im_context_reset (context);
+    }
 
   return TRUE;
 }
@@ -4340,10 +4318,8 @@ gtk_text_enter_text (GtkText    *self,
 {
   GtkTextPrivate *priv = gtk_text_get_instance_private (self);
   int tmp_pos;
-  gboolean old_need_im_reset;
   guint text_length;
 
-  old_need_im_reset = priv->need_im_reset;
   priv->need_im_reset = FALSE;
 
   if (priv->selection_bound != priv->current_pos)
@@ -4361,8 +4337,6 @@ gtk_text_enter_text (GtkText    *self,
   tmp_pos = priv->current_pos;
   gtk_editable_insert_text (GTK_EDITABLE (self), str, strlen (str), &tmp_pos);
   gtk_text_set_selection_bounds (self, tmp_pos, tmp_pos);
-
-  priv->need_im_reset = old_need_im_reset;
 }
 
 /* All changes to priv->current_pos and priv->selection_bound

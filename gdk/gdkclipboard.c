@@ -29,6 +29,7 @@
 #include "gdkintl.h"
 #include "gdkpipeiostreamprivate.h"
 #include "gdktexture.h"
+#include "gdk-private.h"
 
 #include <gobject/gvaluecollector.h>
 
@@ -357,9 +358,7 @@ gdk_clipboard_class_init (GdkClipboardClass *class)
    * The `GdkDisplay` that the clipboard belongs to.
    */
   properties[PROP_DISPLAY] =
-    g_param_spec_object ("display",
-                         "Display",
-                         "Display owning this clipboard",
+    g_param_spec_object ("display", NULL, NULL,
                          GDK_TYPE_DISPLAY,
                          G_PARAM_READWRITE |
                          G_PARAM_CONSTRUCT_ONLY |
@@ -372,9 +371,7 @@ gdk_clipboard_class_init (GdkClipboardClass *class)
    * The possible formats that the clipboard can provide its data in.
    */
   properties[PROP_FORMATS] =
-    g_param_spec_boxed ("formats",
-                        "Formats",
-                        "The possible formats for data",
+    g_param_spec_boxed ("formats", NULL, NULL,
                         GDK_TYPE_CONTENT_FORMATS,
                         G_PARAM_READABLE |
                         G_PARAM_STATIC_STRINGS |
@@ -386,9 +383,7 @@ gdk_clipboard_class_init (GdkClipboardClass *class)
    * %TRUE if the contents of the clipboard are owned by this process.
    */
   properties[PROP_LOCAL] =
-    g_param_spec_boolean ("local",
-                          "Local",
-                          "If the contents are owned by this process",
+    g_param_spec_boolean ("local", NULL, NULL,
                           TRUE,
                           G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS |
@@ -401,9 +396,7 @@ gdk_clipboard_class_init (GdkClipboardClass *class)
    * provided otherwise.
    */
   properties[PROP_CONTENT] =
-    g_param_spec_object ("content",
-                         "Content",
-                         "Provider of the clipboard's content",
+    g_param_spec_object ("content", NULL, NULL,
                          GDK_TYPE_CONTENT_PROVIDER,
                          G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS |
@@ -416,7 +409,7 @@ gdk_clipboard_class_init (GdkClipboardClass *class)
    * Emitted when the clipboard changes ownership.
    */
   signals[CHANGED] =
-    g_signal_new ("changed",
+    g_signal_new (I_("changed"),
                   G_TYPE_FROM_CLASS (class),
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (GdkClipboardClass, changed),

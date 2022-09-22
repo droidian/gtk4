@@ -3,6 +3,7 @@ include:
     file: 'flatpak/flatpak_ci_initiative.yml'
 
 stages:
+  - check
   - build
   - analysis
   - docs
@@ -21,12 +22,12 @@ stages:
 
 # Common variables
 variables:
-  COMMON_MESON_FLAGS: "-Dwerror=true -Dglib:werror=false -Dpango:werror=false -Dgtk-doc:werror=false -Dwayland-protocols:werror=false -Dsysprof:werror=false"
+  COMMON_MESON_FLAGS: "-Dwerror=true -Dglib:werror=false -Dpango:werror=false -Dgtk-doc:werror=false -Dwayland-protocols:werror=false -Dsysprof:werror=false -Dwayland:werror=false"
   BACKEND_FLAGS: "-Dx11-backend=true -Dwayland-backend=true -Dbroadway-backend=true"
   FEATURE_FLAGS: "-Dvulkan=enabled -Dcloudproviders=enabled"
   MESON_TEST_TIMEOUT_MULTIPLIER: 3
-  FEDORA_IMAGE: "registry.gitlab.gnome.org/gnome/gtk/fedora:v36"
-  FLATPAK_IMAGE: "registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master"
+  FEDORA_IMAGE: "registry.gitlab.gnome.org/gnome/gtk/fedora:v38"
+  FLATPAK_IMAGE: "quay.io/gnome_infrastructure/gnome-runtime-images:gnome-master"
 
 .only-default:
   only:
@@ -37,7 +38,7 @@ variables:
 style-check-diff:
   extends: .only-default
   image: $FEDORA_IMAGE
-  stage: .pre
+  stage: check
   allow_failure: true
   script:
     - .gitlab-ci/run-style-check-diff.sh
@@ -58,6 +59,7 @@ style-check-diff:
       - "${CI_PROJECT_DIR}/_build/report*.xml"
       - "${CI_PROJECT_DIR}/_build/report*.html"
       - "${CI_PROJECT_DIR}/_build/testsuite/reftests/output/*/*.png"
+      - "${CI_PROJECT_DIR}/_build/testsuite/reftests/output/*/*.node"
       - "${CI_PROJECT_DIR}/_build/testsuite/tools/output/*/*"
       - "${CI_PROJECT_DIR}/_build/testsuite/gsk/compare/*/*/*.png"
       - "${CI_PROJECT_DIR}/_build/testsuite/css/output/*/*.syscap"
@@ -107,6 +109,29 @@ release-build:
             _build
     - ninja -C _build
     - .gitlab-ci/run-tests.sh _build x11
+
+fedora-mingw64:
+  extends: .build-fedora-default
+  stage: build
+  needs: []
+  before_script:
+    - sudo dnf install -y
+            mingw64-filesystem
+            mingw64-gcc
+            mingw64-binutils
+            mingw64-cairo
+            mingw64-gdk-pixbuf
+            mingw64-gstreamer1-plugins-bad-free
+            mingw64-glib2
+            mingw64-libepoxy
+            mingw64-pango
+            # mingw64-graphene (rawhide)
+  script:
+    - .gitlab-ci/show-info-linux.sh
+    - meson subprojects update
+    - mkdir _build && cd _build
+    - mingw64-meson -Dintrospection=disabled -Dgraphene:introspection=disabled
+    - ninja
 
 installed-tests:
   extends: .build-fedora-default
@@ -172,7 +197,7 @@ macos:
   needs: []
   before_script:
     - bash .gitlab-ci/show-info-osx.sh
-    - pip3 install --user meson==0.59
+    - pip3 install --user meson==0.60.3
     - pip3 install --user ninja
     - export PATH=/Users/gitlabrunner/Library/Python/3.7/bin:$PATH
     - export MESON_FORCE_BACKTRACE=1
@@ -268,6 +293,18 @@ flatpak-main:icon-browser:
   variables:
     APPID: org.gtk.IconBrowser4
 
+flatpak-manual:node-editor:
+  extends: .flatpak-manual
+  needs: []
+  variables:
+    APPID: org.gtk.gtk4.NodeEditor
+
+flatpak-main:node-editor:
+  extends: .flatpak-main
+  needs: []
+  variables:
+    APPID: org.gtk.gtk4.NodeEditor
+
 # Publish the demo apps to the GNOME Nightly repo
 # https://wiki.gnome.org/Apps/Nightly
 # https://gitlab.gnome.org/GNOME/Initiatives/-/wikis/DevOps-with-Flatpak
@@ -285,6 +322,11 @@ nightly icon-browser:
     extends: '.publish_nightly'
     dependencies: ['flatpak-main:icon-browser']
     needs: ['flatpak-main:icon-browser']
+
+nightly node-editor:
+    extends: '.publish_nightly'
+    dependencies: ['flatpak-main:node-editor']
+    needs: ['flatpak-main:node-editor']
 
 static-scan:
   image: $FEDORA_IMAGE
@@ -345,6 +387,7 @@ reference:
       - _reference
 
 publish-docs:
+  image: fedora:latest
   stage: publish
   needs: ['reference']
   script:

@@ -243,7 +243,6 @@ update_label_request (GtkScale *scale)
   GtkScalePrivate *priv = gtk_scale_get_instance_private (scale);
   GtkAdjustment *adjustment = gtk_range_get_adjustment (GTK_RANGE (scale));
   double lowest_value, highest_value;
-  char *old_text;
   char *text;
   int size = 0;
   int min;
@@ -253,7 +252,6 @@ update_label_request (GtkScale *scale)
   lowest_value = gtk_adjustment_get_lower (adjustment);
   highest_value = gtk_adjustment_get_upper (adjustment);
 
-  old_text = g_strdup (gtk_label_get_label (GTK_LABEL (priv->value_widget)));
   gtk_widget_set_size_request (priv->value_widget, -1, -1);
 
   text = gtk_scale_format_value (scale, lowest_value);
@@ -272,9 +270,10 @@ update_label_request (GtkScale *scale)
   size = MAX (size, min);
   g_free (text);
 
+  text = gtk_scale_format_value (scale, gtk_adjustment_get_value (adjustment));
   gtk_widget_set_size_request (priv->value_widget, size, -1);
-  gtk_label_set_label (GTK_LABEL (priv->value_widget), old_text);
-  g_free (old_text);
+  gtk_label_set_label (GTK_LABEL (priv->value_widget), text);
+  g_free (text);
 }
 
 static void
@@ -677,9 +676,7 @@ gtk_scale_class_init (GtkScaleClass *class)
    * The number of decimal places that are displayed in the value.
    */
   properties[PROP_DIGITS] =
-      g_param_spec_int ("digits",
-                        P_("Digits"),
-                        P_("The number of decimal places that are displayed in the value"),
+      g_param_spec_int ("digits", NULL, NULL,
                         -1, MAX_DIGITS,
                         1,
                         GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -690,9 +687,7 @@ gtk_scale_class_init (GtkScaleClass *class)
    * Whether the current value is displayed as a string next to the slider.
    */
   properties[PROP_DRAW_VALUE] =
-      g_param_spec_boolean ("draw-value",
-                            P_("Draw Value"),
-                            P_("Whether the current value is displayed as a string next to the slider"),
+      g_param_spec_boolean ("draw-value", NULL, NULL,
                             FALSE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -702,9 +697,7 @@ gtk_scale_class_init (GtkScaleClass *class)
    * Whether the scale has an origin.
    */
   properties[PROP_HAS_ORIGIN] =
-      g_param_spec_boolean ("has-origin",
-                            P_("Has Origin"),
-                            P_("Whether the scale has an origin"),
+      g_param_spec_boolean ("has-origin", NULL, NULL,
                             TRUE,
                             GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -714,9 +707,7 @@ gtk_scale_class_init (GtkScaleClass *class)
    * The position in which the current value is displayed.
    */
   properties[PROP_VALUE_POS] =
-      g_param_spec_enum ("value-pos",
-                         P_("Value Position"),
-                         P_("The position in which the current value is displayed"),
+      g_param_spec_enum ("value-pos", NULL, NULL,
                          GTK_TYPE_POSITION_TYPE,
                          GTK_POS_TOP,
                          GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -1036,6 +1027,9 @@ gtk_scale_set_digits (GtkScale *scale,
       if (priv->draw_value)
         gtk_range_set_round_digits (range, digits);
 
+      if (priv->value_widget)
+        update_label_request (scale);
+
       gtk_widget_queue_resize (GTK_WIDGET (scale));
 
       g_object_notify_by_pspec (G_OBJECT (scale), properties[PROP_DIGITS]);
@@ -1116,16 +1110,9 @@ gtk_scale_set_draw_value (GtkScale *scale,
       priv->draw_value = draw_value;
       if (draw_value)
         {
-          char *txt;
-
-          txt = gtk_scale_format_value (scale,
-                                        gtk_adjustment_get_value (gtk_range_get_adjustment (GTK_RANGE (scale))));
-
           priv->value_widget = g_object_new (GTK_TYPE_LABEL,
                                              "css-name", "value",
-                                             "label", txt,
                                              NULL);
-          g_free (txt);
 
           gtk_widget_insert_after (priv->value_widget, GTK_WIDGET (scale), NULL);
           gtk_range_set_round_digits (GTK_RANGE (scale), priv->digits);
@@ -2065,8 +2052,6 @@ gtk_scale_set_format_value_func (GtkScale                *scale,
                                  GDestroyNotify           destroy_notify)
 {
   GtkScalePrivate *priv = gtk_scale_get_instance_private (scale);
-  GtkAdjustment *adjustment;
-  char *text;
 
   g_return_if_fail (GTK_IS_SCALE (scale));
 
@@ -2077,15 +2062,6 @@ gtk_scale_set_format_value_func (GtkScale                *scale,
   priv->format_value_func_user_data = user_data;
   priv->format_value_func_destroy_notify = destroy_notify;
 
-  if (!priv->value_widget)
-    return;
-
-  update_label_request (scale);
-
-  adjustment = gtk_range_get_adjustment (GTK_RANGE (scale));
-  text = gtk_scale_format_value (scale,
-                                 gtk_adjustment_get_value (adjustment));
-  gtk_label_set_label (GTK_LABEL (priv->value_widget), text);
-
-  g_free (text);
+  if (priv->value_widget)
+    update_label_request (scale);
 }

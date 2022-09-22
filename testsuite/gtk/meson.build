@@ -6,6 +6,8 @@ gtk_tests_export_dynamic_ldflag = []
 if cc.get_id() != 'msvc'
   if os_darwin
     gtk_tests_export_dynamic_ldflag = ['-Wl,-export_dynamic']
+  elif os_win32
+    gtk_tests_export_dynamic_ldflag = ['-Wl,--export-all-symbols']
   else
     gtk_tests_export_dynamic_ldflag = ['-Wl,--export-dynamic']
   endif
@@ -26,6 +28,7 @@ tests = [
   { 'name': 'action' },
   { 'name': 'adjustment' },
   { 'name': 'bitset' },
+  { 'name': 'border' },
   {
     'name': 'builder',
     'link_args': gtk_tests_export_dynamic_ldflag,
@@ -54,9 +57,11 @@ tests = [
   { 'name': 'icontheme' },
   { 'name': 'label' },
   { 'name': 'listbox' },
+  { 'name': 'listlistmodel' },
   { 'name': 'main' },
   { 'name': 'maplistmodel' },
   { 'name': 'multiselection' },
+  { 'name': 'noselection' },
   { 'name': 'notify' },
   { 'name': 'no-gtk-init' },
   { 'name': 'object' },
@@ -76,7 +81,6 @@ tests = [
   { 'name': 'spinbutton' },
   { 'name': 'stringlist' },
   { 'name': 'templates' },
-  { 'name': 'textbuffer' },
   { 'name': 'textiter' },
   { 'name': 'theme-validate' },
   { 'name': 'tooltips' },
@@ -119,6 +123,7 @@ internal_tests = [
   { 'name': 'propertylookuplistmodel' },
   { 'name': 'rbtree' },
   { 'name': 'timsort' },
+  { 'name': 'textbuffer' },
   { 'name': 'texthistory' },
   { 'name': 'fnmatch' },
 ]

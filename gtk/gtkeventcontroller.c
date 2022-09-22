@@ -66,6 +66,7 @@ struct _GtkEventControllerPrivate
   char *name;
   GtkWidget *target;
   GdkEvent *event;
+  unsigned int name_is_static : 1;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GtkEventController, gtk_event_controller, G_TYPE_OBJECT)
@@ -173,8 +174,9 @@ gtk_event_controller_finalize (GObject *object)
 {
   GtkEventController *self = GTK_EVENT_CONTROLLER (object);
   GtkEventControllerPrivate *priv = gtk_event_controller_get_instance_private (self);
-  
-  g_free (priv->name);
+
+  if (!priv->name_is_static)
+    g_free (priv->name);
 
   G_OBJECT_CLASS (gtk_event_controller_parent_class)->finalize (object);
 }
@@ -200,9 +202,7 @@ gtk_event_controller_class_init (GtkEventControllerClass *klass)
    * The widget receiving the `GdkEvents` that the controller will handle.
    */
   properties[PROP_WIDGET] =
-      g_param_spec_object ("widget",
-                           P_("Widget"),
-                           P_("Widget the gesture relates to"),
+      g_param_spec_object ("widget", NULL, NULL,
                            GTK_TYPE_WIDGET,
                            GTK_PARAM_READABLE);
 
@@ -212,9 +212,7 @@ gtk_event_controller_class_init (GtkEventControllerClass *klass)
    * The propagation phase at which this controller will handle events.
    */
   properties[PROP_PROPAGATION_PHASE] =
-      g_param_spec_enum ("propagation-phase",
-                         P_("Propagation phase"),
-                         P_("Propagation phase at which this controller is run"),
+      g_param_spec_enum ("propagation-phase", NULL, NULL,
                          GTK_TYPE_PROPAGATION_PHASE,
                          GTK_PHASE_BUBBLE,
                          GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -225,9 +223,7 @@ gtk_event_controller_class_init (GtkEventControllerClass *klass)
    * The limit for which events this controller will handle.
    */
   properties[PROP_PROPAGATION_LIMIT] =
-      g_param_spec_enum ("propagation-limit",
-                         P_("Propagation limit"),
-                         P_("Propagation limit for events handled by this controller"),
+      g_param_spec_enum ("propagation-limit", NULL, NULL,
                          GTK_TYPE_PROPAGATION_LIMIT,
                          GTK_LIMIT_SAME_NATIVE,
                          GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
@@ -238,9 +234,7 @@ gtk_event_controller_class_init (GtkEventControllerClass *klass)
    * The name for this controller, typically used for debugging purposes.
    */
   properties[PROP_NAME] =
-      g_param_spec_string ("name",
-                           P_("Name"),
-                           P_("Name for this controller"),
+      g_param_spec_string ("name", NULL, NULL,
                            NULL,
                            GTK_PARAM_READWRITE);
 
@@ -579,8 +573,33 @@ gtk_event_controller_set_name (GtkEventController *controller,
 
   g_return_if_fail (GTK_IS_EVENT_CONTROLLER (controller));
 
-  g_free (priv->name);
+  if (!priv->name_is_static)
+    g_free (priv->name);
   priv->name = g_strdup (name);
+  priv->name_is_static = FALSE;
+}
+
+/**
+ * gtk_event_controller_set_static_name:
+ * @controller: a `GtkEventController`
+ * @name: (nullable): a name for @controller, must be a static string
+ *
+ * Sets a name on the controller that can be used for debugging.
+ *
+ * Since: 4.8
+ */
+void
+gtk_event_controller_set_static_name (GtkEventController *controller,
+                                      const char         *name)
+{
+  GtkEventControllerPrivate *priv = gtk_event_controller_get_instance_private (controller);
+
+  g_return_if_fail (GTK_IS_EVENT_CONTROLLER (controller));
+
+  if (!priv->name_is_static)
+    g_free (priv->name);
+  priv->name = (char *)name;
+  priv->name_is_static = TRUE;
 }
 
 GtkWidget *

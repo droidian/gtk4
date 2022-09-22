@@ -143,6 +143,14 @@ items_changed (GListModel *model,
 }
 
 static void
+notify_n_items (GObject    *object,
+                GParamSpec *pspec,
+                GString    *changes)
+{
+  g_string_append_c (changes, '*');
+}
+
+static void
 free_changes (gpointer data)
 {
   GString *changes = data;
@@ -174,6 +182,7 @@ new_model (guint    size,
   changes = g_string_new ("");
   g_object_set_qdata_full (G_OBJECT(tree), changes_quark, changes, free_changes);
   g_signal_connect (tree, "items-changed", G_CALLBACK (items_changed), changes);
+  g_signal_connect (tree, "notify::n-items", G_CALLBACK (notify_n_items), changes);
 
   return tree;
 }
@@ -193,7 +202,7 @@ test_expand (void)
       g_object_unref (row);
     }
   assert_model (tree, "100 100 90 80 70 60 50 40 30 20 10");
-  assert_changes (tree, "1+10");
+  assert_changes (tree, "1+10*");
 
   for (i = g_list_model_get_n_items (G_LIST_MODEL (tree)); i > 0; i--)
     {
@@ -202,7 +211,7 @@ test_expand (void)
       g_object_unref (row);
     }
   assert_model (tree, "100 100 100 99 98 97 96 95 94 93 92 91 90 90 89 88 87 86 85 84 83 82 81 80 80 79 78 77 76 75 74 73 72 71 70 70 69 68 67 66 65 64 63 62 61 60 60 59 58 57 56 55 54 53 52 51 50 50 49 48 47 46 45 44 43 42 41 40 40 39 38 37 36 35 34 33 32 31 30 30 29 28 27 26 25 24 23 22 21 20 20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 4 3 2 1");
-  assert_changes (tree, "11+10, 10+10, 9+10, 8+10, 7+10, 6+10, 5+10, 4+10, 3+10, 2+10");
+  assert_changes (tree, "11+10*, 10+10*, 9+10*, 8+10*, 7+10*, 6+10*, 5+10*, 4+10*, 3+10*, 2+10*");
 
   for (i = g_list_model_get_n_items (G_LIST_MODEL (tree)); i > 0; i--)
     {
@@ -229,27 +238,146 @@ test_remove_some (void)
   g_assert_true (G_IS_LIST_MODEL (item));
   g_list_store_remove (item, 3);
   assert_model (tree, "100 100 100 99 98 96 95 94 93 92 91 90 90 89 88 87 86 85 84 83 82 81 80 80 79 78 77 76 75 74 73 72 71 70 70 69 68 67 66 65 64 63 62 61 60 60 59 58 57 56 55 54 53 52 51 50 50 49 48 47 46 45 44 43 42 41 40 40 39 38 37 36 35 34 33 32 31 30 30 29 28 27 26 25 24 23 22 21 20 20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 4 3 2 1");
-  assert_changes (tree, "-5");
+  assert_changes (tree, "-5*");
 
   item = g_list_model_get_item (G_LIST_MODEL (tree), 0);
   g_assert_true (G_IS_LIST_MODEL (item));
   g_list_store_remove (item, 3);
   assert_model (tree, "100 100 100 99 98 96 95 94 93 92 91 90 90 89 88 87 86 85 84 83 82 81 80 80 79 78 77 76 75 74 73 72 71 60 60 59 58 57 56 55 54 53 52 51 50 50 49 48 47 46 45 44 43 42 41 40 40 39 38 37 36 35 34 33 32 31 30 30 29 28 27 26 25 24 23 22 21 20 20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 4 3 2 1");
-  assert_changes (tree, "33-11");
+  assert_changes (tree, "33-11*");
 
   item = g_list_model_get_item (G_LIST_MODEL (tree), 88);
   g_assert_true (G_IS_LIST_MODEL (item));
   g_list_store_remove (item, 9);
   assert_model (tree, "100 100 100 99 98 96 95 94 93 92 91 90 90 89 88 87 86 85 84 83 82 81 80 80 79 78 77 76 75 74 73 72 71 60 60 59 58 57 56 55 54 53 52 51 50 50 49 48 47 46 45 44 43 42 41 40 40 39 38 37 36 35 34 33 32 31 30 30 29 28 27 26 25 24 23 22 21 20 20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 4 3 2");
-  assert_changes (tree, "-98");
+  assert_changes (tree, "-98*");
 
   item = g_list_model_get_item (G_LIST_MODEL (tree), 0);
   g_assert_true (G_IS_LIST_MODEL (item));
   g_list_store_remove (item, 8);
   assert_model (tree, "100 100 100 99 98 96 95 94 93 92 91 90 90 89 88 87 86 85 84 83 82 81 80 80 79 78 77 76 75 74 73 72 71 60 60 59 58 57 56 55 54 53 52 51 50 50 49 48 47 46 45 44 43 42 41 40 40 39 38 37 36 35 34 33 32 31 30 30 29 28 27 26 25 24 23 22 21 20 20 19 18 17 16 15 14 13 12 11");
-  assert_changes (tree, "88-10");
+  assert_changes (tree, "88-10*");
 
   g_object_unref (tree);
+}
+
+/* Test for https://gitlab.gnome.org/GNOME/gtk/-/issues/4595 */
+typedef struct _DemoNode DemoNode;
+
+struct _DemoNode {
+  GObject parent_instance;
+  char *value;
+  GListStore *children;
+};
+
+G_DECLARE_FINAL_TYPE (DemoNode, demo_node, DEMO, NODE, GObject);
+
+G_DEFINE_TYPE (DemoNode, demo_node, G_TYPE_OBJECT);
+
+static void
+demo_node_init (DemoNode *node)
+{
+}
+
+static void
+demo_node_finalize (GObject *object)
+{
+  g_free (DEMO_NODE (object)->value);
+
+  G_OBJECT_CLASS (demo_node_parent_class)->finalize (object);
+}
+
+static void
+demo_node_class_init (DemoNodeClass *klass)
+{
+  G_OBJECT_CLASS (klass)->finalize = demo_node_finalize;
+}
+
+static DemoNode *
+demo_node_new (const char *value,
+               GListStore *children)
+{
+  DemoNode *result;
+
+  result = g_object_new (demo_node_get_type(), NULL);
+  result->value = g_strdup (value);
+  if (children)
+    result->children = g_object_ref (children);
+
+  return result;
+}
+
+static GListStore *
+create_model (void)
+{
+  DemoNode *aa, *a, *b, *c;
+  GListStore *a_children, *root;
+
+  aa = demo_node_new ("aa", NULL);
+
+  a_children = g_list_store_new (demo_node_get_type ());
+  g_list_store_append (a_children, aa);
+
+  a = demo_node_new ("a", a_children);
+  b = demo_node_new ("b", NULL);
+  c = demo_node_new ("c", NULL);
+
+  root = g_list_store_new (demo_node_get_type ());
+  g_list_store_append (root, a);
+  g_list_store_append (root, b);
+  g_list_store_append (root, c);
+
+  g_object_unref (aa);
+  g_object_unref (a_children);
+  g_object_unref (a);
+  g_object_unref (b);
+  g_object_unref (c);
+
+  return root;
+}
+
+static GListModel *
+model_children (gpointer item,
+                gpointer unused)
+{
+  GListStore *children;
+
+  children = DEMO_NODE (item)->children;
+  if (children)
+    return G_LIST_MODEL (g_object_ref (children));
+
+  return NULL;
+}
+
+static void
+test_collapse_change (void)
+{
+  GListStore *model;
+  GtkTreeListModel *treemodel;
+  DemoNode *a, *ab;
+  GtkTreeListRow *row;
+
+  model = create_model ();
+  a = g_list_model_get_item (G_LIST_MODEL (model), 0);
+
+  treemodel = gtk_tree_list_model_new (G_LIST_MODEL (model),
+                                       FALSE,
+                                       FALSE,
+                                       model_children,
+                                       NULL,
+                                       NULL);
+
+  row = gtk_tree_list_model_get_row (treemodel, 0);
+  gtk_tree_list_row_set_expanded (row, TRUE);
+  gtk_tree_list_row_set_expanded (row, FALSE);
+  g_object_unref (row);
+
+  ab = demo_node_new ("ab", NULL);
+  g_list_store_append (a->children, ab);
+  g_object_unref (ab);
+
+  g_object_unref (treemodel);
+  g_object_unref (a);
 }
 
 int
@@ -263,6 +391,7 @@ main (int argc, char *argv[])
 
   g_test_add_func ("/treelistmodel/expand", test_expand);
   g_test_add_func ("/treelistmodel/remove_some", test_remove_some);
+  g_test_add_func ("/treelistmodel/collapse-change", test_collapse_change);
 
   return g_test_run ();
 }

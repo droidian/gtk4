@@ -181,6 +181,7 @@ setup_tweak_button (GtkFontChooserDialog *dialog)
       gtk_widget_set_focus_on_click (button, FALSE);
       gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
       gtk_button_set_icon_name (GTK_BUTTON (button), "emblem-system-symbolic");
+      gtk_widget_set_tooltip_text (button, _("Change Font Features"));
 
       header = gtk_dialog_get_header_bar (GTK_DIALOG (dialog));
       gtk_header_bar_pack_end (GTK_HEADER_BAR (header), button);
@@ -229,10 +230,10 @@ gtk_font_chooser_dialog_dispose (GObject *object)
                                             dialog);
     }
 
-  g_clear_pointer (&dialog->select_button, gtk_widget_unparent);
-  g_clear_pointer (&dialog->cancel_button, gtk_widget_unparent);
+  /* tweak_button is not a template child */
   g_clear_pointer (&dialog->tweak_button, gtk_widget_unparent);
-  g_clear_pointer (&dialog->fontchooser, gtk_widget_unparent);
+
+  gtk_widget_dispose_template (GTK_WIDGET (dialog), GTK_TYPE_FONT_CHOOSER_DIALOG);
 
   G_OBJECT_CLASS (gtk_font_chooser_dialog_parent_class)->dispose (object);
 }

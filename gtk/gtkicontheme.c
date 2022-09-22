@@ -36,6 +36,7 @@
 #include <windows.h>
 #include <shellapi.h>
 #include "win32/gdkwin32.h"
+#include "win32/gdkprivate-win32.h"
 #endif /* G_OS_WIN32 */
 
 #include "gtkiconthemeprivate.h"
@@ -988,9 +989,7 @@ gtk_icon_theme_class_init (GtkIconThemeClass *klass)
    * The display that this icon theme object is attached to.
    */
   props[PROP_DISPLAY] =
-      g_param_spec_object ("display",
-                           P_("Display"),
-                           P_("Display"),
+      g_param_spec_object ("display", NULL, NULL,
                            GDK_TYPE_DISPLAY,
                            G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -1000,9 +999,7 @@ gtk_icon_theme_class_init (GtkIconThemeClass *klass)
    * The icon names that are supported by the icon theme.
    */
   props[PROP_ICON_NAMES] =
-      g_param_spec_boxed ("icon-names",
-                          P_("Supported icon names"),
-                          P_("Supported icon names"),
+      g_param_spec_boxed ("icon-names", NULL, NULL,
                           G_TYPE_STRV,
                           GTK_PARAM_READABLE);
 
@@ -1018,9 +1015,7 @@ gtk_icon_theme_class_init (GtkIconThemeClass *klass)
    * to be extended by adding icons in the user’s home directory.)
    */
   props[PROP_SEARCH_PATH] =
-      g_param_spec_boxed ("search-path",
-                          P_("Search path"),
-                          P_("Search path"),
+      g_param_spec_boxed ("search-path", NULL, NULL,
                           G_TYPE_STRV,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -1037,9 +1032,7 @@ gtk_icon_theme_class_init (GtkIconThemeClass *klass)
    * of a subdirectory are also considered as ultimate fallback.
    */
   props[PROP_RESOURCE_PATH] =
-      g_param_spec_boxed ("resource-path",
-                          P_("Resource path"),
-                          P_("Resource path"),
+      g_param_spec_boxed ("resource-path", NULL, NULL,
                           G_TYPE_STRV,
                           GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -1053,9 +1046,7 @@ gtk_icon_theme_class_init (GtkIconThemeClass *klass)
    * object associated to the display of the icontheme object. 
    */
   props[PROP_THEME_NAME] =
-      g_param_spec_string ("theme-name",
-                           P_("Theme name"),
-                           P_("Theme name"),
+      g_param_spec_string ("theme-name", NULL, NULL,
                            NULL,
                            GTK_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
 
@@ -1719,7 +1710,7 @@ static const char builtin_hicolor_index[] =
 "[Icon Theme]\n"
 "Name=Hicolor\n"
 "Hidden=True\n"
-"Directories=16x16/actions,16x16/status,22x22/actions,24x24/actions,24x24/status,32x32/actions,32x32/status,48x48/status,64x64/actions\n"
+"Directories=16x16/actions,16x16/status,22x22/actions,24x24/actions,24x24/status,32x32/actions,32x32/status,48x48/status,64x64/actions,scalable/status,scalable/actions\n"
 "[16x16/actions]\n"
 "Size=16\n"
 "Type=Threshold\n"
@@ -1746,7 +1737,17 @@ static const char builtin_hicolor_index[] =
 "Type=Threshold\n"
 "[64x64/actions]\n"
 "Size=64\n"
-"Type=Threshold\n";
+"Type=Threshold\n"
+"[scalable/status]\n"
+"MinSize=1\n"
+"Size=128\n"
+"MaxSize=256\n"
+"Type=Scalable\n"
+"[scalable/actions]\n"
+"MinSize=1\n"
+"Size=128\n"
+"MaxSize=256\n"
+"Type=Scalable\n";
 
 static void
 insert_theme (GtkIconTheme *self,
@@ -3625,9 +3626,7 @@ gtk_icon_paintable_class_init (GtkIconPaintableClass *klass)
    * The file representing the icon, if any.
    */
   g_object_class_install_property (gobject_class, PROP_FILE,
-                                   g_param_spec_object ("file",
-                                                        P_("file"),
-                                                        P_("The file representing the icon"),
+                                   g_param_spec_object ("file", NULL, NULL,
                                                         G_TYPE_FILE,
                                                         G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_BLURB | G_PARAM_STATIC_NICK));
 
@@ -3637,9 +3636,7 @@ gtk_icon_paintable_class_init (GtkIconPaintableClass *klass)
    * The icon name that was chosen during lookup.
    */
   g_object_class_install_property (gobject_class, PROP_ICON_NAME,
-                                   g_param_spec_string ("icon-name",
-                                                        P_("Icon name"),
-                                                        P_("The icon name chosen during lookup"),
+                                   g_param_spec_string ("icon-name", NULL, NULL,
                                                         NULL,
                                                         G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_BLURB | G_PARAM_STATIC_NICK));
 
@@ -3649,9 +3646,7 @@ gtk_icon_paintable_class_init (GtkIconPaintableClass *klass)
    * Whether the icon is symbolic or not.
    */
   g_object_class_install_property (gobject_class, PROP_IS_SYMBOLIC,
-                                   g_param_spec_boolean ("is-symbolic",
-                                                        P_("Is symbolic"),
-                                                        P_("If the icon is symbolic"),
+                                   g_param_spec_boolean ("is-symbolic", NULL, NULL,
                                                         FALSE,
                                                         G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_BLURB | G_PARAM_STATIC_NICK));
 }

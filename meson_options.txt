@@ -51,7 +51,7 @@ option('print-cups',
 option('vulkan',
        type: 'feature',
        value: 'disabled',
-       description : 'Enable support for the experimental Vulkan graphics API')
+       description : 'Enable support for the experimental Vulkan renderer')
 
 option('cloudproviders',
        type: 'feature',
@@ -84,6 +84,11 @@ option('gtk_doc',
        type: 'boolean',
        value: false,
        description : 'Build API reference and tools documentation')
+
+option('update_screenshots',
+       type: 'boolean',
+       value: false,
+       description : 'Regenerate screenshots for the documentation')
 
 option('man-pages',
        type: 'boolean',
