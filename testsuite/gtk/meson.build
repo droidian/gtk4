@@ -23,8 +23,9 @@ endif
 #  - 'suites': (array): additional test suites
 tests = [
   { 'name': 'accel' },
-# sadly, mesons xfail support seems busted
-#  { 'name': 'accessor-apis' },
+  # we are still missing some accessors
+  { 'name': 'accessor-apis',
+    'suites': ['failing'] },
   { 'name': 'action' },
   { 'name': 'adjustment' },
   { 'name': 'bitset' },
@@ -105,6 +106,9 @@ tests = [
   { 'name': 'revealer-size' },
   { 'name': 'widgetorder' },
   { 'name': 'widget-refcount' },
+  # This test was disabled for long enough that it no longer compiles
+  #{ 'name': 'window',
+  #  'suites': ['failing'] },
 ]
 
 # Tests that test private apis and therefore are linked against libgtk-4.a
@@ -126,16 +130,6 @@ internal_tests = [
   { 'name': 'textbuffer' },
   { 'name': 'texthistory' },
   { 'name': 'fnmatch' },
-]
-
-# Tests that are expected to fail
-xfail = [
-  # we are still missing some accessors
-  'accessor-apis',
-  # one of the window resizing tests fails after
-  # the GdkToplevel refactoring, and needs a big
-  # gtkwindow.c configure request cleanup
-  'window',
 ]
 
 is_debug = get_option('buildtype').startswith('debug')
@@ -181,8 +175,6 @@ foreach t : tests
     install_dir: testexecdir,
   )
 
-  expect_fail = xfail.contains(test_name)
-
   if test_extra_suites.contains('slow')
     test_timeout = 90
   endif
@@ -193,7 +185,6 @@ foreach t : tests
     timeout: test_timeout,
     env: test_env,
     suite: ['gtk'] + test_extra_suites,
-    should_fail: expect_fail,
   )
 endforeach
 
@@ -214,8 +205,6 @@ foreach t : internal_tests
     install_dir: testexecdir,
   )
 
-  expect_fail = xfail.contains(test_name)
-
   if test_extra_suites.contains('slow')
     test_timeout = 90
   endif
@@ -226,7 +215,6 @@ foreach t : internal_tests
     timeout: test_timeout,
     env: test_env,
     suite: ['gtk'] + test_extra_suites,
-    should_fail: expect_fail,
   )
 endforeach
 

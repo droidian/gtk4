@@ -38,6 +38,8 @@ foreach t : tests
     install_dir: testexecdir,
   )
 
+  suites = ['gdk'] + t.get('suites', [])
+
   test(test_name, test_exe,
     args: [ '--tap', '-k' ],
     protocol: 'tap',
@@ -47,7 +49,7 @@ foreach t : tests
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
       'DBUS_SESSION_BUS_ADDRESS=',
     ],
-    suite: 'gdk',
+    suite: suites,
   )
 endforeach
 
