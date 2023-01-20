@@ -44,7 +44,6 @@
 #include "gtkcsscolorvalueprivate.h"
 #include "gtkdebug.h"
 #include "gtkiconcacheprivate.h"
-#include "gtkintl.h"
 #include "gtkmain.h"
 #include "gtkprivate.h"
 #include "gtksettingsprivate.h"
@@ -1346,8 +1345,7 @@ do_theme_change (GtkIconTheme *self)
   if (!self->themes_valid)
     return;
 
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME,
-            g_message ("change to icon theme \"%s\"", self->current_theme));
+  GTK_DISPLAY_DEBUG (self->display, ICONTHEME, "change to icon theme \"%s\"", self->current_theme);
   blow_themes (self);
 
   queue_theme_changed (self);
@@ -1706,49 +1704,6 @@ gtk_icon_theme_get_theme_name (GtkIconTheme *self)
   return theme_name;
 }
 
-static const char builtin_hicolor_index[] =
-"[Icon Theme]\n"
-"Name=Hicolor\n"
-"Hidden=True\n"
-"Directories=16x16/actions,16x16/status,22x22/actions,24x24/actions,24x24/status,32x32/actions,32x32/status,48x48/status,64x64/actions,scalable/status,scalable/actions\n"
-"[16x16/actions]\n"
-"Size=16\n"
-"Type=Threshold\n"
-"[16x16/status]\n"
-"Size=16\n"
-"Type=Threshold\n"
-"[22x22/actions]\n"
-"Size=22\n"
-"Type=Threshold\n"
-"[24x24/actions]\n"
-"Size=24\n"
-"Type=Threshold\n"
-"[24x24/status]\n"
-"Size=24\n"
-"Type=Threshold\n"
-"[32x32/actions]\n"
-"Size=32\n"
-"Type=Threshold\n"
-"[32x32/status]\n"
-"Size=32\n"
-"Type=Threshold\n"
-"[48x48/status]\n"
-"Size=48\n"
-"Type=Threshold\n"
-"[64x64/actions]\n"
-"Size=64\n"
-"Type=Threshold\n"
-"[scalable/status]\n"
-"MinSize=1\n"
-"Size=128\n"
-"MaxSize=256\n"
-"Type=Scalable\n"
-"[scalable/actions]\n"
-"MinSize=1\n"
-"Size=128\n"
-"MaxSize=256\n"
-"Type=Scalable\n";
-
 static void
 insert_theme (GtkIconTheme *self,
               const char   *theme_name)
@@ -1815,9 +1770,20 @@ insert_theme (GtkIconTheme *self,
     {
       if (strcmp (theme_name, FALLBACK_ICON_THEME) == 0)
         {
+          const char *resource_path = "/org/gtk/libgtk/icons/hicolor.index.theme";
+          GBytes *index;
+
+          index = g_resources_lookup_data (resource_path,
+                                           G_RESOURCE_LOOKUP_FLAGS_NONE,
+                                           NULL);
+          if (!index)
+            g_error ("Cannot find resource %s", resource_path);
+
           theme_file = g_key_file_new ();
           g_key_file_set_list_separator (theme_file, ',');
-          g_key_file_load_from_data (theme_file, builtin_hicolor_index, -1, 0, NULL);
+          g_key_file_load_from_bytes (theme_file, index, G_KEY_FILE_NONE, NULL);
+
+          g_bytes_unref (index);
         }
       else
         return;
@@ -2038,19 +2004,22 @@ load_themes (GtkIconTheme *self)
 
   self->last_stat_time = g_get_monotonic_time ();
 
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME, {
-    GList *l;
-    GString *s;
-    s = g_string_new ("Current icon themes ");
-    for (l = self->themes; l; l = l->next)
-      {
-        IconTheme *theme = l->data;
-        g_string_append (s, theme->name);
-        g_string_append_c (s, ' ');
-      }
-    g_message ("%s", s->str);
-    g_string_free (s, TRUE);
-  });
+#ifdef G_ENABLE_DEBUG
+  if (GTK_DISPLAY_DEBUG_CHECK (self->display, ICONTHEME))
+    {
+      GList *l;
+      GString *s;
+      s = g_string_new ("Current icon themes ");
+      for (l = self->themes; l; l = l->next)
+        {
+          IconTheme *theme = l->data;
+          g_string_append (s, theme->name);
+          g_string_append_c (s, ' ');
+        }
+      gdk_debug_message ("%s", s->str);
+      g_string_free (s, TRUE);
+    }
+#endif
 }
 
 static gboolean
@@ -2169,9 +2138,13 @@ real_choose_icon (GtkIconTheme      *self,
   key.flags = flags;
 
   /* This is used in the icontheme unit test */
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME,
-            for (i = 0; icon_names[i]; i++)
-              g_message ("\tlookup name: %s", icon_names[i]));
+#ifdef G_ENABLE_DEBUG
+  if (GTK_DISPLAY_DEBUG_CHECK (self->display, ICONTHEME))
+    {
+      for (i = 0; icon_names[i]; i++)
+        gdk_debug_message ("\tlookup name: %s", icon_names[i]);
+    }
+#endif
 
   icon = icon_cache_lookup (self, &key);
   if (icon)
@@ -2270,11 +2243,14 @@ real_choose_icon (GtkIconTheme      *self,
   /* Fall back to missing icon */
   if (icon == NULL)
     {
-      GTK_NOTE(ICONFALLBACK, {
-        char *s = g_strjoinv (", ", (char **)icon_names);
-        g_message ("No icon found in %s (or fallbacks) for: %s", self->current_theme, s);
-        g_free (s);
-      });
+#ifdef G_ENABLE_DEBUG
+      if (GTK_DEBUG_CHECK (ICONFALLBACK))
+        {
+          char *s = g_strjoinv (", ", (char **)icon_names);
+          gdk_debug_message ("No icon found in %s (or fallbacks) for: %s", self->current_theme, s);
+          g_free (s);
+        }
+#endif
       icon = icon_paintable_new ("image-missing", size, scale);
       icon->filename = g_strdup (IMAGE_MISSING_RESOURCE_PATH);
       icon->is_resource = TRUE;
@@ -2482,8 +2458,7 @@ gtk_icon_theme_lookup_icon (GtkIconTheme       *self,
   g_return_val_if_fail (icon_name != NULL, NULL);
   g_return_val_if_fail (scale >= 1, NULL);
 
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME,
-                    g_message ("looking up icon %s for scale %d", icon_name, scale));
+  GTK_DISPLAY_DEBUG (self->display, ICONTHEME, "looking up icon %s for scale %d", icon_name, scale);
 
   gtk_icon_theme_lock (self);
 
@@ -3151,8 +3126,7 @@ scan_directory (GtkIconTheme  *self,
   const char *name;
   GHashTable *icons = NULL;
 
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME,
-                    g_message ("scanning directory %s", full_dir));
+  GTK_DISPLAY_DEBUG (self->display, ICONTHEME, "scanning directory %s", full_dir);
 
   gdir = g_dir_open (full_dir, 0, NULL);
 
@@ -3193,8 +3167,7 @@ scan_resource_directory (GtkIconTheme  *self,
   char **children;
   int i;
 
-  GTK_DISPLAY_NOTE (self->display, ICONTHEME,
-                    g_message ("scanning resource directory %s", full_dir));
+  GTK_DISPLAY_DEBUG (self->display, ICONTHEME, "scanning resource directory %s", full_dir);
 
   children = g_resources_enumerate_children (full_dir, 0, NULL);
 

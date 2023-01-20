@@ -30,6 +30,7 @@
 #include "loaders/gdktiffprivate.h"
 #include "loaders/gdkjpegprivate.h"
 #include "gdkmemorytextureprivate.h"
+#include "gdkprivate.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <string.h>
@@ -360,12 +361,14 @@ gdk_content_serializer_return_success (GdkContentSerializer *serializer)
 {
   g_return_if_fail (GDK_IS_CONTENT_SERIALIZER (serializer));
   g_return_if_fail (!serializer->returned);
+  guint source_id;
 
   serializer->returned = TRUE;
-  g_idle_add_full (serializer->priority,
-                   gdk_content_serializer_emit_callback,
-                   serializer,
-                   g_object_unref);
+  source_id = g_idle_add_full (serializer->priority,
+                               gdk_content_serializer_emit_callback,
+                               serializer,
+                               g_object_unref);
+  gdk_source_set_static_name_by_id (source_id, "[gtk] gdk_content_serializer_emit_callback");
   /* NB: the idle will destroy our reference */
 }
 
@@ -792,6 +795,22 @@ file_serializer_finish (GObject      *source,
     gdk_content_serializer_return_success (serializer);
 }
 
+static char *
+file_get_native_uri (GFile *file)
+{
+  char *path;
+
+  path = g_file_get_path (file);
+  if (path != NULL)
+    {
+      char *uri = g_filename_to_uri (path, NULL, NULL);
+      g_free (path);
+      return uri;
+    }
+
+  return g_file_get_uri (file);
+}
+
 static void
 file_uri_serializer (GdkContentSerializer *serializer)
 {
@@ -808,7 +827,7 @@ file_uri_serializer (GdkContentSerializer *serializer)
       file = g_value_get_object (gdk_content_serializer_get_value (serializer));
       if (file)
         {
-          uri = g_file_get_uri (file);
+          uri = file_get_native_uri (file);
           g_string_append (str, uri);
           g_free (uri);
         }
@@ -824,7 +843,7 @@ file_uri_serializer (GdkContentSerializer *serializer)
 
       for (l = g_value_get_boxed (value); l; l = l->next)
         {
-          uri = g_file_get_uri (l->data);
+          uri = file_get_native_uri (l->data);
           g_string_append (str, uri);
           g_free (uri);
           g_string_append (str, "\r\n");
