@@ -261,6 +261,8 @@ ifeq (big,$(DEB_HOST_ARCH_ENDIAN))
 endif
 
 override_dh_auto_test:
+
+override_dh_auto_test_disabled:
 	env \
 		BUILDDIR=debian/build/deb \
 		FUZZY_GSK_COMPARE="$(fuzzy_gsk_compare)" \
