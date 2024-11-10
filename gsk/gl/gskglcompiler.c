@@ -134,7 +134,7 @@ gsk_gl_compiler_new (GskGLDriver *driver,
       /* for OpenGL/ES 3.0+, use "300 es" as our shader version */
       gdk_gl_context_get_version (context, &maj, &min);
 
-      if (maj >= 3)
+      if (maj >= 3 && strncmp ((const char *)glGetString (GL_RENDERER), "Adreno ", 7) != 0)
         {
           self->glsl_version = SHADER_VERSION_GLES3;
           self->gles3 = TRUE;
