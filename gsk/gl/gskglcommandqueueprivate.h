@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include <gsk/gskprofilerprivate.h>
-
 #include "gskgltypesprivate.h"
 #include "gskglbufferprivate.h"
 #include "gskglattachmentstateprivate.h"
@@ -219,10 +217,6 @@ struct _GskGLCommandQueue
    */
   GskGLUniformProgram *program_info;
 
-  /* The profiler instance to deliver timing/etc data */
-  GskProfiler *profiler;
-  GskGLProfiler *gl_profiler;
-
   /* Array of GskGLCommandBind which denote what textures need to be attached
    * to which slot. GskGLCommandDraw.bind_offset and bind_count reference this
    * array to determine what to attach.
@@ -301,8 +295,6 @@ struct _GskGLCommandQueue
 
 GskGLCommandQueue *gsk_gl_command_queue_new                   (GdkGLContext         *context,
                                                                GskGLUniformState    *uniforms);
-void                gsk_gl_command_queue_set_profiler         (GskGLCommandQueue    *self,
-                                                               GskProfiler          *profiler);
 GdkGLContext       *gsk_gl_command_queue_get_context          (GskGLCommandQueue    *self);
 void                gsk_gl_command_queue_make_current         (GskGLCommandQueue    *self);
 void                gsk_gl_command_queue_begin_frame          (GskGLCommandQueue    *self);

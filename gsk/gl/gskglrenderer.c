@@ -218,9 +218,6 @@ gsk_gl_renderer_realize (GskRenderer  *renderer,
   self->context = g_steal_pointer (&context);
   self->driver = g_steal_pointer (&driver);
 
-  gsk_gl_command_queue_set_profiler (self->command_queue,
-                                     gsk_renderer_get_profiler (renderer));
-
   ret = TRUE;
 
 failure:
@@ -271,7 +268,7 @@ get_render_region (GdkSurface   *surface,
   /* Damage does not have scale factor applied so we can compare it to
    * @whole_surface which also doesn't have the scale factor applied.
    */
-  damage = gdk_draw_context_get_frame_region (GDK_DRAW_CONTEXT (context));
+  damage = gdk_draw_context_get_render_region (GDK_DRAW_CONTEXT (context));
 
   if (cairo_region_contains_rectangle (damage, &whole_surface) == CAIRO_REGION_OVERLAP_IN)
     return NULL;
@@ -303,7 +300,7 @@ gsk_gl_renderer_render (GskRenderer          *renderer,
   g_assert (root != NULL);
 
   surface = gdk_draw_context_get_surface (GDK_DRAW_CONTEXT (self->context));
-  scale = gdk_gl_context_get_scale (self->context);
+  scale = gdk_surface_get_scale (surface);
 
   if (cairo_region_is_empty (update_area))
     {

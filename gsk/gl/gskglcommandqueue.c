@@ -420,8 +420,6 @@ gsk_gl_command_queue_dispose (GObject *object)
 
   g_assert (GSK_IS_GL_COMMAND_QUEUE (self));
 
-  g_clear_object (&self->profiler);
-  g_clear_object (&self->gl_profiler);
   g_clear_object (&self->context);
   g_clear_pointer (&self->attachments, gsk_gl_attachment_state_unref);
   g_clear_pointer (&self->uniforms, gsk_gl_uniform_state_unref);
@@ -1065,9 +1063,6 @@ gsk_gl_command_queue_execute (GskGLCommandQueue    *self,
 
   gsk_gl_command_queue_make_current (self);
 
-  gsk_gl_profiler_begin_gpu_region (self->gl_profiler);
-  gsk_profiler_timer_begin (self->profiler, self->metrics.cpu_time);
-
   glDisable (GL_DEPTH_TEST);
 
   /* Pre-multiplied alpha */
@@ -1295,18 +1290,6 @@ gsk_gl_command_queue_execute (GskGLCommandQueue    *self,
   gdk_profiler_set_int_counter (self->metrics.n_programs, n_programs);
   gdk_profiler_set_int_counter (self->metrics.n_uploads, self->n_uploads);
   gdk_profiler_set_int_counter (self->metrics.queue_depth, self->batches.len);
-
-  {
-    gint64 start_time G_GNUC_UNUSED = gsk_profiler_timer_get_start (self->profiler, self->metrics.cpu_time);
-    gint64 cpu_time = gsk_profiler_timer_end (self->profiler, self->metrics.cpu_time);
-    gint64 gpu_time = gsk_gl_profiler_end_gpu_region (self->gl_profiler);
-
-    gsk_profiler_timer_set (self->profiler, self->metrics.gpu_time, gpu_time);
-    gsk_profiler_timer_set (self->profiler, self->metrics.cpu_time, cpu_time);
-    gsk_profiler_counter_inc (self->profiler, self->metrics.n_frames);
-
-    gsk_profiler_push_samples (self->profiler);
-  }
 }
 
 void
@@ -1755,28 +1738,4 @@ gsk_gl_command_queue_upload_texture (GskGLCommandQueue *self,
                                                      1,
                                                      &(GskGLTextureChunk){ texture, 0, 0},
                                                      out_can_mipmap);
-}
-
-void
-gsk_gl_command_queue_set_profiler (GskGLCommandQueue *self,
-                                   GskProfiler       *profiler)
-{
-  g_assert (GSK_IS_GL_COMMAND_QUEUE (self));
-  g_assert (GSK_IS_PROFILER (profiler));
-
-  if (g_set_object (&self->profiler, profiler))
-    {
-      self->gl_profiler = gsk_gl_profiler_new (self->context);
-
-      self->metrics.n_frames = gsk_profiler_add_counter (profiler, "frames", "Frames", FALSE);
-      self->metrics.cpu_time = gsk_profiler_add_timer (profiler, "cpu-time", "CPU Time", FALSE, TRUE);
-      self->metrics.gpu_time = gsk_profiler_add_timer (profiler, "gpu-time", "GPU Time", FALSE, TRUE);
-
-      self->metrics.n_binds = gdk_profiler_define_int_counter ("attachments", "Number of texture attachments");
-      self->metrics.n_fbos = gdk_profiler_define_int_counter ("fbos", "Number of framebuffers attached");
-      self->metrics.n_uniforms = gdk_profiler_define_int_counter ("uniforms", "Number of uniforms changed");
-      self->metrics.n_uploads = gdk_profiler_define_int_counter ("uploads", "Number of texture uploads");
-      self->metrics.n_programs = gdk_profiler_define_int_counter ("programs", "Number of program changes");
-      self->metrics.queue_depth = gdk_profiler_define_int_counter ("gl-queue-depth", "Depth of GL command batches");
-    }
 }
