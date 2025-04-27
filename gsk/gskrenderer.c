@@ -41,7 +41,7 @@
 
 #include "gskenumtypes.h"
 
-#include "gpu/gskglrenderer.h"
+#include "gl/gskglrenderer.h"
 #include "gpu/gskvulkanrenderer.h"
 #include "gdk/gdkvulkancontextprivate.h"
 #include "gdk/gdkdisplayprivate.h"
@@ -490,7 +490,7 @@ get_renderer_for_name (const char *renderer_name)
   else if (g_ascii_strcasecmp (renderer_name, "cairo") == 0)
     return GSK_TYPE_CAIRO_RENDERER;
   else if (g_ascii_strcasecmp (renderer_name, "ngl") == 0)
-    return GSK_TYPE_GL_RENDERER;
+    return gsk_ngl_renderer_get_type ();
 #ifdef GDK_RENDERING_VULKAN
   else if (g_ascii_strcasecmp (renderer_name, "vulkan") == 0)
     return GSK_TYPE_VULKAN_RENDERER;
@@ -601,7 +601,7 @@ get_renderer_for_gl (GdkSurface *surface)
   if (!gl_supported_platform (surface, FALSE))
     return G_TYPE_INVALID;
 
-  return GSK_TYPE_GL_RENDERER;
+  return gsk_ngl_renderer_get_type ();
 }
 
 static GType
@@ -610,7 +610,7 @@ get_renderer_for_gl_fallback (GdkSurface *surface)
   if (!gl_supported_platform (surface, TRUE))
     return G_TYPE_INVALID;
 
-  return GSK_TYPE_GL_RENDERER;
+  return gsk_ngl_renderer_get_type ();
 }
 
 #ifdef GDK_RENDERING_VULKAN

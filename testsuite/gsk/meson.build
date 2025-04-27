@@ -225,6 +225,7 @@ informative_render_tests = [
 ]
 
 renderers = [
+  { 'name': 'gl' },
   { 'name': 'broadway' },
   { 'name': 'cairo' },
   { 'name': 'ngl' },
