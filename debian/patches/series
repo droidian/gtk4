@@ -17,3 +17,5 @@ testsuite-Don-t-build-waylandsocket-test-if-Wayland-is-di.patch
 imcontextwayland-Don-t-resend-text-change-cause-on-cursor.patch
 gtktext-Add-getter-for-im-context.patch
 searchbar-Show-OSK-when-search-mode-gets-enabled.patch
+text-Protect-against-invalid-offset.patch
+a11y-Protect-against-invalid-offset.patch
