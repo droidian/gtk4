@@ -298,7 +298,7 @@ index 9cdd2a6..8da98ca 100644
  
  G_END_DECLS
 diff --git a/tools/gtk-image-tool-compare.c b/tools/gtk-image-tool-compare.c
-index 1690f24..e9ea834 100644
+index 9ac3c5d..df1fc18 100644
 --- a/tools/gtk-image-tool-compare.c
 +++ b/tools/gtk-image-tool-compare.c
 @@ -50,6 +50,9 @@ do_compare (int          *argc,
@@ -322,7 +322,7 @@ index 1690f24..e9ea834 100644
    if (opt_filename && diff)
      {
 diff --git a/tools/gtk-rendernode-tool-compare.c b/tools/gtk-rendernode-tool-compare.c
-index c6cba7f..c8126c8 100644
+index c1bff12..f7af2c9 100644
 --- a/tools/gtk-rendernode-tool-compare.c
 +++ b/tools/gtk-rendernode-tool-compare.c
 @@ -75,6 +75,9 @@ do_compare (int          *argc,
