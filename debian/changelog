@@ -1,3 +1,10 @@
+gtk4 (4.24.1+ds-1) UNRELEASED; urgency=medium
+
+  * New upstream release (LP: #2169210)
+  * Use Depends: libgtk-4-common (>= ${source:Upstream-Version})
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Thu, 01 Oct 2026 21:05:50 +0200
+
 gtk4 (4.24.0+ds-2) unstable; urgency=medium
 
   * Cherry-pick 3 proposed patches from Guido Günther
