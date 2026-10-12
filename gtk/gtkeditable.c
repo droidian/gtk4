@@ -1037,7 +1037,7 @@ gtk_editable_set_input_interceptor (GtkEditable *editable,
   g_return_if_fail (GTK_IS_EDITABLE (editable));
   g_return_if_fail (!interceptor || GTK_IS_WIDGET (interceptor));
 
-  g_object_set (editable, "input-interceptor", interceptor, NULL);
+  //g_object_set (editable, "input-interceptor", interceptor, NULL);
 }
 
 /**
